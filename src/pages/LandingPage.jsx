@@ -12,7 +12,7 @@ export default function LandingPage() {
                     Explore official flags, capitals, populations, and more using live global data.
                 </p>
 
-                <Link to="/home">
+                <Link to="/countries">
                     <button className="px-6 py-3 bg-gradient-to-r from-orange-500 via-red-400 to-pink-500 text-white rounded-full font-semibold text-lg transition duration-300 shadow-lg hover:scale-105">
                         Get Started
                     </button>

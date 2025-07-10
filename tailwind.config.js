@@ -10,6 +10,9 @@ export default {
     colors: {
       glass: 'rgba(255, 255, 255, 0.1)',
     },
+    backgroundImage: {
+        countriesImage: "url('src/assets/countries-image.jpg')",
+    },
     backdropBlur: {
       xs: '2px',
     },

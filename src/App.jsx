@@ -12,7 +12,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/countries" element={<Home />} />
         <Route path="/country/:name" element={<CountryDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
