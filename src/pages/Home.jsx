@@ -1,31 +1,39 @@
 import { useEffect, useState } from "react";
 import CountryCard from "../components/CountryCard";
 import axios from "axios";
-import SearchBar from "../components/SearchBar";
+import SearchFilterBar from "../components/SearchFilterBar";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 
 export default function Home() {
     const [countries, setCountries] = useState([]);
     const [filtered, setFiltered] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        fetch("https://restcountries.com/v3.1/all?fields=name,capital,flags,region,population,cca3")
-            .then((res) => {
-                if (!res.ok) throw new Error("Failed to fetch");
-                return res.json();
-            })
-            .then((data) => {
-                setCountries(data);
-                setFiltered(data);
+        const fetchCountries = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(
+                    "https://restcountries.com/v3.1/all?fields=name,capital,flags,region,population,cca3"
+                );
+                setCountries(response.data);
+                setFiltered(response.data);
+                toast.success("Countries loaded successfully.");
+            } catch (error) {
+                console.error("Axios fetch error:", error);
+                toast.error("Failed to load countries. Please try again.");
+            } finally {
                 setLoading(false);
-            })
-            .catch((err) => {
-                console.error("Fetch error:", err);
-                setLoading(false);
-            });
+            }
+        };
+
+        fetchCountries();
     }, []);
 
     const handleSearch = (query) => {
+        setSearchTerm(query);
         const q = query.toLowerCase();
         const result = countries.filter((c) =>
             c.name.common.toLowerCase().includes(q)
@@ -40,13 +48,36 @@ export default function Home() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-4">
-            <SearchBar onSearch={handleSearch} onRegionChange={handleRegionChange} />
+        <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <SearchFilterBar
+                onSearch={handleSearch}
+                onRegionChange={handleRegionChange}
+            />
 
             {loading ? (
-                <div className="text-center mt-16 text-xl animate-pulse">Loading countries...</div>
+                <div className="min-h-screen flex items-center justify-center">
+                    <ClipLoader loading={loading} size={50} color="#FDAC74" />
+                </div>
+            ) : filtered.length === 0 ? (
+                <div className="min-h-[40vh] flex flex-col items-center justify-center text-center text-gray-600 dark:text-gray-300">
+                    <p className="text-xl font-semibold mb-2">
+                        No countries found
+                        {searchTerm && (
+                            <>
+                                {" "}
+                                for{" "}
+                                <span className="text-orange-500 dark:text-orange-400">
+                                    "{searchTerm}"
+                                </span>
+                            </>
+                        )}
+                    </p>
+                    <p className="text-sm max-w-sm">
+                        Try adjusting your search term or filter region to find the country you're looking for.
+                    </p>
+                </div>
             ) : (
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-6">
                     {filtered.map((country) => (
                         <CountryCard key={country.cca3} country={country} />
                     ))}

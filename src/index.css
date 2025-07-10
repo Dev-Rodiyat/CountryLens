@@ -7,3 +7,9 @@
     @apply p-2 bg-gray-100 rounded hover:bg-gray-200 text-lg font-medium;
   }
 }
+
+.border-l-gradient {
+  border-left: 4px solid;
+  border-image: linear-gradient(to right, #f97316, #ef4444, #ec4899) 1;
+  border-image-slice: 1;
+}
